@@ -89,10 +89,15 @@ public class ProductServiceImpl implements ProductService {
         product.changePrice(productDTO.getPrice());
 
         //기존 이미지 목록들을 살린다. -- 나중에 비교해서 삭제
-        List<String> oldFileNames = product.getImages().stream().map(pi -> pi.getFname()).collect(Collectors.toList());
+        List<String> oldFileNames = product
+                .getImages()
+                .stream()
+                .map(pi -> pi.getFname())
+                .collect(Collectors.toList());
 
         //이미지들은 clearImages( )한 후에
         product.clearImages();
+
         //이미지 문자열들을 추가 addImage( )
         productDTO.getImages().forEach(fname -> product.addImage(fname));
 

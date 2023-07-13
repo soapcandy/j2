@@ -24,18 +24,18 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public PageResponseDTO<ProductListDTO> list(PageRequestDTO requestDTO) {
-     
+
         return productRepository.listWithReview(requestDTO);
     }
 
     @Override
     public Long register(ProductDTO productDTO) {
-       
+
         Product product = Product.builder()
-        .pname(productDTO.getPname())
-        .pdesc(productDTO.getPdesc())
-        .price(productDTO.getPrice())
-        .build();
+                .pname(productDTO.getPname())
+                .pdesc(productDTO.getPdesc())
+                .price(productDTO.getPrice())
+                .build();
 
         productDTO.getImages().forEach(fname -> {
             product.addImage(fname);
@@ -103,9 +103,16 @@ public class ProductServiceImpl implements ProductService {
         log.info("=============================");
         log.info("=============================");
 
-        productRepository.save(product);
         //save()
+        productRepository.save(product);
 
+        // 기존 파일들 중에 productDTO.getImages()에 없는 파일 찾기
+        List<String> newFiles = productDTO.getImages();
+        List<String> wantDeleteFiles = oldFileNames.stream()
+                .filter(f -> newFiles.indexOf(f) == -1)
+                .collect(Collectors.toList());
+
+        fileUploader.removeFiles(wantDeleteFiles);
     }
 
 }

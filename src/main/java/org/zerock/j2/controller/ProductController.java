@@ -25,7 +25,7 @@ public class ProductController {
     private final FileUploader uploader;
 
     @PostMapping("")
-    public Map<String, Long> register( ProductDTO productDTO ){
+    public Map<String, Long> register(ProductDTO productDTO) {
 
         log.info(productDTO);
 
@@ -38,19 +38,20 @@ public class ProductController {
     }
 
     @PostMapping("modify")
-    public Map<String, Long> modify( ProductDTO productDTO ){
+    public Map<String, Long> modify(ProductDTO productDTO) {
 
         log.info("----------------------modify---------------");
         log.info("----------------------modify---------------");
         log.info("----------------------modify---------------");
         log.info(productDTO);
 
-        List<String> uploadFileNames = uploader.uploadFiles(productDTO.getFiles(),true);
+        if (productDTO.getFiles() != null && productDTO.getFiles().size() > 0) {
+            List<String> uploadFileNames = uploader.uploadFiles(productDTO.getFiles(), true);
 
-        List<String> oldFileNames = productDTO.getImages();
+            List<String> oldFileNames = productDTO.getImages();
 
-        uploadFileNames.forEach(fname -> oldFileNames.add(fname));
-
+            uploadFileNames.forEach(fname -> oldFileNames.add(fname));
+        }
         log.info("After.....................");
         log.info(productDTO);
 
@@ -59,7 +60,7 @@ public class ProductController {
         return Map.of("result", 111L);
     }
 
-    @GetMapping(value="list")
+    @GetMapping(value = "list")
     public PageResponseDTO<ProductListDTO> list(PageRequestDTO pageRequestDTO) {
 
         log.info("---------------------------");
@@ -70,7 +71,7 @@ public class ProductController {
     }
 
     @GetMapping("{pno}")
-    public ProductDTO getOne(@PathVariable("pno") Long pno){
+    public ProductDTO getOne(@PathVariable("pno") Long pno) {
 
         log.info("PNO................" + pno);
 

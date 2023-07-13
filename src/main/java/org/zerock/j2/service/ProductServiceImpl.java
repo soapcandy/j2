@@ -112,6 +112,9 @@ public class ProductServiceImpl implements ProductService {
                 .filter(f -> newFiles.indexOf(f) == -1)
                 .collect(Collectors.toList());
 
+        log.info("-----------------");
+        log.info(wantDeleteFiles);
+
         fileUploader.removeFiles(wantDeleteFiles);
     }
 

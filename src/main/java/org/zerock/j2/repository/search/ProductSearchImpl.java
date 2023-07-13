@@ -13,15 +13,15 @@ import org.zerock.j2.dto.ProductListDTO;
 import org.zerock.j2.entity.Product;
 import org.zerock.j2.entity.QProduct;
 import org.zerock.j2.entity.QProductImage;
+import org.zerock.j2.entity.QProductReview;
 
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.JPQLQuery;
 
 import lombok.extern.log4j.Log4j2;
-import org.zerock.j2.entity.QProductReview;
 
 @Log4j2
-public class ProductSearchImpl extends QuerydslRepositorySupport implements ProductSearch {
+public class ProductSearchImpl extends QuerydslRepositorySupport implements ProductSearch{
 
     public ProductSearchImpl() {
         super(Product.class);
@@ -38,21 +38,21 @@ public class ProductSearchImpl extends QuerydslRepositorySupport implements Prod
 
         query.where(productImage.ord.eq(0));
 
-        int pageNum = pageRequestDTO.getPage() <= 0 ? 0 : pageRequestDTO.getPage() - 1;
-        Pageable pageable =
-                PageRequest.of(pageNum, pageRequestDTO.getSize(),
-                        Sort.by("pno").descending());
+        int pageNum = pageRequestDTO.getPage() <= 0? 0: pageRequestDTO.getPage() -1;
+        Pageable pageable = 
+         PageRequest.of( pageNum, pageRequestDTO.getSize(),
+         Sort.by("pno").descending()  );
 
         this.getQuerydsl().applyPagination(pageable, query);
 
-        JPQLQuery<ProductListDTO> dtoQuery =
-                query.select(
-                        Projections.bean(ProductListDTO.class,
-                                product.pno,
-                                product.pname,
-                                product.price,
-                                productImage.fname)
-                );
+        JPQLQuery<ProductListDTO> dtoQuery = 
+            query.select(
+                Projections.bean(ProductListDTO.class,
+                 product.pno,
+                 product.pname,
+                 product.price,
+                 productImage.fname)
+            );
         List<ProductListDTO> dtoList = dtoQuery.fetch();
 
         long totalCount = dtoQuery.fetchCount();
@@ -72,33 +72,35 @@ public class ProductSearchImpl extends QuerydslRepositorySupport implements Prod
         query.leftJoin(review).on(review.product.eq(product));
 
         query.where(productImage.ord.eq(0));
+        query.where(product.delFlag.eq(Boolean.FALSE));
 
-        int pageNum = pageRequestDTO.getPage() <= 0 ? 0 : pageRequestDTO.getPage() - 1;
-        Pageable pageable =
-                PageRequest.of(pageNum, pageRequestDTO.getSize(),
-                        Sort.by("pno").descending());
+        int pageNum = pageRequestDTO.getPage() <= 0? 0: pageRequestDTO.getPage() -1;
+        Pageable pageable = 
+         PageRequest.of( pageNum, pageRequestDTO.getSize(),
+         Sort.by("pno").descending()  );
 
         this.getQuerydsl().applyPagination(pageable, query);
 
         query.groupBy(product);
 
-        JPQLQuery<ProductListDTO> dtoQuery =
-                query.select(
-                        Projections.bean(ProductListDTO.class,
-                                product.pno,
-                                product.pname,
-                                product.price,
-                                productImage.fname.min().as("fname"),
-                                review.score.avg().as("reviewAvg"),
-                                review.count().as("reviewCnt")
-                                )
-                );
+        JPQLQuery<ProductListDTO> dtoQuery = 
+            query.select(
+                Projections.bean(ProductListDTO.class,
+                 product.pno,
+                 product.pname,
+                 product.price,
+                 productImage.fname.min().as("fname"),
+                 review.score.avg().as("reviewAvg"),
+                 review.count().as("reviewCnt")
+                 )
+            );
         List<ProductListDTO> dtoList = dtoQuery.fetch();
 
         long totalCount = dtoQuery.fetchCount();
 
         return new PageResponseDTO<>(dtoList, totalCount, pageRequestDTO);
-    }
 
+    }
+    
 
 }

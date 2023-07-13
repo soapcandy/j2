@@ -7,5 +7,6 @@ import org.zerock.j2.dto.ProductListDTO;
 public interface ProductSearch {
     
     PageResponseDTO<ProductListDTO> list(PageRequestDTO pageRequestDTO);
+
     PageResponseDTO<ProductListDTO> listWithReview(PageRequestDTO pageRequestDTO);
 }

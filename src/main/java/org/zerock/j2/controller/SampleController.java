@@ -8,8 +8,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/sample")
 public class SampleController {
 
+
+
     @GetMapping("/one")
     public String[] doA() {
-        return new String[]{"AAA", "BBB", "CCC"};
+        return new String[]{"AAA","BBB","CCC"};
     }
 }

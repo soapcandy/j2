@@ -17,32 +17,32 @@ import jakarta.transaction.Transactional;
 
 @SpringBootTest
 public class ProductTests {
-
+    
     @Autowired
     ProductRepository repo;
 
-//     @Test
-//     public void testInsert(){
-//
-//         for(int i = 0; i < 200; i++){
-//             Product product = Product.builder()
-//             .pname("Test"+i)
-//             .pdesc("Test"+i)
-//             .writer("user"+i)
-//             .price(4000)
-//             .build();
-//
-//             product.addImage(UUID.randomUUID().toString()+"_aaa.jpg");
-//             product.addImage(UUID.randomUUID().toString()+"_bbb.jpg");
-//             product.addImage(UUID.randomUUID().toString()+"_ccc.jpg");
-//
-//             repo.save(product);
-//         }//end for
-//     }
+    // @Test
+    // public void testInsert(){
+
+    //     for(int i = 0; i < 200; i++){
+    //         Product product = Product.builder()
+    //         .pname("Test"+i)
+    //         .pdesc("Test"+i)
+    //         .writer("user"+i)
+    //         .price(4000)
+    //         .build();
+
+    //         product.addImage(UUID.randomUUID().toString()+"_aaa.jpg");
+    //         product.addImage(UUID.randomUUID().toString()+"_bbb.jpg");
+    //         product.addImage(UUID.randomUUID().toString()+"_ccc.jpg");
+
+    //         repo.save(product);
+    //     }//end for
+    // }
 
     @Transactional
     @Test
-    public void testRead1() {
+    public void testRead1(){
 
         Optional<Product> result = repo.findById(1L);
 
@@ -52,17 +52,18 @@ public class ProductTests {
         System.out.println("--------------------------");
         System.out.println(product.getImages());
 
+
     }
 
     @Test
-    public void testRead2() {
-
+    public void testRead2(){
+        
         Product product = repo.selectOne(1L);
 
         System.out.println(product);
         System.out.println("--------------------------");
         System.out.println(product.getImages());
-
+        
     }
 
     @Test
@@ -85,14 +86,14 @@ public class ProductTests {
 
         product.clearImages();
 
-        product.addImage(UUID.randomUUID() + "_newImage.jpg");
+        product.addImage(UUID.randomUUID()+"_newImage.jpg");
 
         repo.save(product);
 
     }
 
     @Test
-    public void testList1() {
+    public void testList1(){
 
         PageRequestDTO requestDTO = new PageRequestDTO();
 
@@ -104,8 +105,8 @@ public class ProductTests {
 
     }
 
-    @Test
-    public void testList2() {
+        @Test
+    public void testList2(){
 
         PageRequestDTO requestDTO = new PageRequestDTO();
 

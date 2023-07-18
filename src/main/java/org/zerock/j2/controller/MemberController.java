@@ -28,7 +28,9 @@ public class MemberController {
 
         String email = socialService.getKakaoEmail(code);
 
-        return null;
+        MemberDTO memberDTO = memberService.getMemberWithEmail(email);
+
+        return memberDTO;
     }
 
     @PostMapping("login")

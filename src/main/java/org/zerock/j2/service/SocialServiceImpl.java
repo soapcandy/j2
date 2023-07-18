@@ -41,7 +41,7 @@ public class SocialServiceImpl implements  SocialService{
 
         String email = getEmailFromAccessToken(accessToken);
 
-        return null;
+        return email;
     }
 
     private String getAccessToken(String authCode){

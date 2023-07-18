@@ -16,7 +16,7 @@ import java.util.LinkedHashMap;
 
 @Service
 @Log4j2
-public class SocialServiceImpl implements SocialService {
+public class SocialServiceImpl implements  SocialService{
 
     @Value("${org.zerock.kakao.token_url}")
     private String tokenURL;
@@ -39,21 +39,23 @@ public class SocialServiceImpl implements SocialService {
 
         String accessToken = getAccessToken(authCode);
 
+        String email = getEmailFromAccessToken(accessToken);
+
         return null;
     }
 
-    private String getAccessToken(String authCode) {
+    private String getAccessToken(String authCode){
 
         String accessToken = null;
         RestTemplate restTemplate = new RestTemplate();
 
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Content-Type", "application/x-www-form-urlencoded;charset=utf-8");
+        headers.add("Content-Type","application/x-www-form-urlencoded;charset=utf-8");
         HttpEntity<String> entity = new HttpEntity<>(headers);
 
         UriComponents uriComponents = UriComponentsBuilder.fromHttpUrl(tokenURL)
-                .queryParam("grant_type", "authorization_code")
-                .queryParam("client_id", clientId)
+                .queryParam("grant_type","authorization_code")
+                .queryParam("client_id",clientId)
                 .queryParam("redirect_uri", redirectURI)
                 .queryParam("code", authCode)
                 .build(true);
@@ -72,6 +74,42 @@ public class SocialServiceImpl implements SocialService {
         log.info("Access Token: " + accessToken);
 
         return accessToken;
+    }
+
+    private String getEmailFromAccessToken(String accessToken){
+
+        if(accessToken == null){
+            throw new RuntimeException("Access Token is null");
+        }
+        RestTemplate restTemplate = new RestTemplate();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "Bearer " + accessToken);
+        headers.add("Content-Type","application/x-www-form-urlencoded");
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+
+        UriComponents uriBuilder = UriComponentsBuilder.fromHttpUrl(getUser).build();
+
+        ResponseEntity<LinkedHashMap> response =
+                restTemplate.exchange(
+                        uriBuilder.toString(),
+                        HttpMethod.GET,
+                        entity,
+                        LinkedHashMap.class);
+
+        log.info(response);
+
+        LinkedHashMap<String, LinkedHashMap> bodyMap = response.getBody();
+
+        log.info("------------------------------------");
+        log.info(bodyMap);
+
+        LinkedHashMap<String, String> kakaoAccount = bodyMap.get("kakao_account");
+
+        log.info("kakaoAccount: " + kakaoAccount);
+
+        return kakaoAccount.get("email");
+
     }
 
 }

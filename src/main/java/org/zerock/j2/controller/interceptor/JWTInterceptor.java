@@ -44,7 +44,7 @@ public class JWTInterceptor implements HandlerInterceptor {
         } catch (Exception e) {
             response.setContentType("application/json");
 
-            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+//            response.setStatus(HttpStatus.UNAUTHORIZED.value());
 
 //            // {"키": "값"}
 //            String str = "{\"error\": }";

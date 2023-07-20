@@ -2,6 +2,7 @@ package org.zerock.j2.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.apache.tomcat.util.http.parser.Authorization;
 import org.springframework.web.bind.annotation.*;
 import org.zerock.j2.dto.MemberDTO;
 import org.zerock.j2.service.MemberService;
@@ -37,7 +38,7 @@ public class MemberController {
     }
 
     @PostMapping("login")
-    public MemberDTO login(@RequestBody MemberDTO memberDTO){
+    public MemberDTO login(@RequestBody MemberDTO memberDTO) {
 
         log.info("Parameter: " + memberDTO);
 
@@ -54,17 +55,33 @@ public class MemberController {
 
         result.setAccessToken(
                 jwtUtil.generate(
-                        Map.of("email", result.getEmail()), 10)
+                        Map.of("email", result.getEmail()), 1)
         );
         result.setRefreshToken(
                 jwtUtil.generate(
-                        Map.of("email", result.getEmail()), 60*24)
+                        Map.of("email", result.getEmail()), 60 * 24)
         );
 
 
         log.info("Return: " + result);
 
-        return  result;
+        return result;
 
+    }
+
+    @RequestMapping("refresh")
+    public Map<String, String> refresh(@RequestHeader("Authorization") String accessToken,
+                                       String refreshToken) {
+
+        log.info("Refresh....access: " + accessToken);
+        log.info("Refresh....refresh: " + refreshToken);
+
+        // accessToken은 만료되었는지 확인
+
+        // refreshToken은 만료되지 않았는지 확인
+        Map<String, Object> claims = jwtUtil.validateToken(refreshToken);
+
+        return Map.of("accessToken", jwtUtil.generate(claims, 1),
+                "refreshToken", jwtUtil.generate(claims, 60 * 24));
     }
 }

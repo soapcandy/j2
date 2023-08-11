@@ -57,7 +57,7 @@ public class ProductController {
 
         service.modify(productDTO);
 
-        return Map.of("result", 111L);
+         return Map.of("result", productDTO.getPno());
     }
 
     @GetMapping(value = "list")
